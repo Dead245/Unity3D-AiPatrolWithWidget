@@ -2,14 +2,18 @@ using UnityEngine;
 using UnityEditor;
 using Unity.VisualScripting;
 
-[CustomEditor(typeof(MovementManager))]
-public class MovementManagerEditor : Editor
+[CustomEditor(typeof(PatrolManager))]
+public class PatrolManagerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        MovementManager myScript = (MovementManager) target;
+        PatrolManager myScript = (PatrolManager) target;
+
+        if (GUILayout.Button("Add Point")) {
+            myScript.GeneratePoint();
+        }
     }
 
 }
