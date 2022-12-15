@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class PatrolManager : MonoBehaviour
@@ -9,6 +9,8 @@ public class PatrolManager : MonoBehaviour
     [SerializeField] GameObject traversingObject;
     [SerializeField] bool shouldLoop;
 
+
+    //Gizmos must be turned on for the positions to be updated as you move the gameObjects for the points in the scene.
     [SerializeField]
     List<Point> points = new List<Point>();
 
@@ -45,10 +47,12 @@ public class PatrolManager : MonoBehaviour
             Gizmos.DrawLine(gameObject.transform.GetChild(0).position, gameObject.transform.GetChild(gameObject.transform.childCount-1).position);
         }
 
-        //Adds small wire sphere at each point
+        //Adds small wire sphere at each point with label showing its number in the hierarchy
         for (int i = 0; i < gameObject.transform.childCount; i++) {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(gameObject.transform.GetChild(i).position, 0.1f);
+            
+            Handles.Label(gameObject.transform.GetChild(i).position + Vector3.up*0.5f,(i+1).ToString());
 
             //Additionally updates the position of the point relating to the gameobject if it has changed
             if (gameObject.transform.GetChild(i).transform.hasChanged && points.Count > 0) {
@@ -79,11 +83,4 @@ public class Point
         this.forward = forward;
         this.waitTime = waitTime;
     }
-}
-
-class Anchor
-{ //For using with curved paths
-    Vector3 position;
-    Vector3 handleAPos;
-    Vector3 handleBPos;
 }
