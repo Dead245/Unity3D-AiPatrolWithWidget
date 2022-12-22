@@ -1,6 +1,6 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,19 +18,58 @@ public class PatrolManager : MonoBehaviour
 
     void Start() {
         objectAnim = traversingObject.GetComponent<Animator>();
+        if (shouldLoop)
+        {
+            StartCoroutine(loopingPatrol());
+        }
+        else
+        {
+            StartCoroutine(nonLoopingPatrol());
+        }
     }
+
     void Update() {
-        if (Vector3.Distance(traversingObject.transform.position, points[currentTarget].position) < 0.2f && currentTarget != points.Count - 1) {
-            currentTarget++;
-        }
+        
+    }
 
-        if (Vector3.Distance(traversingObject.transform.position, points[currentTarget].position) > 0.2f){
-            traversingObject.transform.LookAt(points[currentTarget].position, Vector3.up);
-            traversingObject.transform.position = Vector3.MoveTowards(traversingObject.transform.position, points[currentTarget].position, walkSpeed * Time.deltaTime);
-            objectAnim.SetBool("shouldMove", true);
-            Debug.Log("Distance: " + Vector3.Distance(traversingObject.transform.position, points[currentTarget].position) + "  |Moving to point #" + currentTarget);
-        }
+    IEnumerator loopingPatrol() {
+        
+        yield return null;
+    }
 
+    IEnumerator nonLoopingPatrol() {
+        int movementDir = 1; //positive for moving 1-8, negative for moving 8-1
+
+        while (true) //condition can be changed for when character needs to deviate from the patrol
+        {
+            if (Vector3.Distance(traversingObject.transform.position, points[currentTarget].position) < 0.2f)
+            {
+                if (points[currentTarget].waitTime > 0f) {
+                    objectAnim.SetBool("shouldMove", false);
+                    yield return new WaitForSeconds(points[currentTarget].waitTime);
+                    objectAnim.SetBool("shouldMove", true);
+                }
+
+                currentTarget += movementDir;
+
+                //check if currentTarget might go out of bounds of array, if so, swap direction
+                if (currentTarget == points.Count) {
+                    movementDir = -1;
+                    currentTarget = points.Count - 2;
+                }
+                if (currentTarget == -1) {
+                    movementDir = 1;
+                    currentTarget = 1;
+                }
+            }
+
+            if (Vector3.Distance(traversingObject.transform.position, points[currentTarget].position) > 0.2f) {
+                traversingObject.transform.LookAt(points[currentTarget].position, Vector3.up);
+                traversingObject.transform.position = Vector3.MoveTowards(traversingObject.transform.position, points[currentTarget].position, walkSpeed * Time.deltaTime);
+                objectAnim.SetBool("shouldMove", true);
+            }
+            yield return null;
+        }
     }
 
     //Creates point when you click on the "Add Point" button on the component in the editor (requires MovementManagerEditor)
