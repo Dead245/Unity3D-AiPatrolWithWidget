@@ -32,9 +32,36 @@ public class PatrolManager : MonoBehaviour
         
     }
 
-    IEnumerator loopingPatrol() {
-        
-        yield return null;
+    IEnumerator loopingPatrol()
+    {
+        while (true) //condition can be changed for when character needs to deviate from the patrol
+        {
+            if (Vector3.Distance(traversingObject.transform.position, points[currentTarget].position) < 0.2f)
+            {
+                if (points[currentTarget].waitTime > 0f)
+                {
+                    objectAnim.SetBool("shouldMove", false);
+                    yield return new WaitForSeconds(points[currentTarget].waitTime);
+                    objectAnim.SetBool("shouldMove", true);
+                }
+
+                currentTarget++;
+
+                //check if currentTarget might go out of bounds of array, if so, go back to starting point
+                if (currentTarget == points.Count)
+                {
+                    currentTarget = 0;
+                }
+            }
+
+            if (Vector3.Distance(traversingObject.transform.position, points[currentTarget].position) > 0.2f)
+            {
+                traversingObject.transform.LookAt(points[currentTarget].position, Vector3.up);
+                traversingObject.transform.position = Vector3.MoveTowards(traversingObject.transform.position, points[currentTarget].position, walkSpeed * Time.deltaTime);
+                objectAnim.SetBool("shouldMove", true);
+            }
+            yield return null;
+        }
     }
 
     IEnumerator nonLoopingPatrol() {
