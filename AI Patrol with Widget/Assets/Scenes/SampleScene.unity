@@ -9494,7 +9494,7 @@ MonoBehaviour:
     waitTime: 0
   - position: {x: 0.05, y: 0.0019999743, z: 2.277}
     forward: {x: 0, y: 0, z: 1}
-    waitTime: 0
+    waitTime: 1
   - position: {x: 4.86, y: 0.0019999743, z: 2.277}
     forward: {x: 0, y: 0, z: 1}
     waitTime: 1
