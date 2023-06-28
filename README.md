@@ -1,4 +1,4 @@
-# Unity3D - AI Patrol With Widget
+# Unity3D - AI Patrol With Widget - Unity Version: 2021.3.0f1
 Using a custom editor window, one can quickly create paths for NPCs to walk on through a game enviroment in Unity.
 <p align="center">
 <img alt="Visual path of patrol route made with Unity Widgets" src="images/CustomEditor.png" width="50%">
